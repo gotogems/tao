@@ -1,9 +1,67 @@
 module Tao
   module Lexer
     class Tokenizer
-      def initialize
-        @scanner = Scanner.new
+      extend Forwardable
+      attr_reader :tokens
+
+      def initialize(source)
+        @scanner = Scanner.new(source)
+        @tokens  = []
+        @start   = 0
       end
+
+      def scan_tokens
+        loop do
+          break if @scanner.at_end?
+          @start = @scanner.pos.index
+          scan_token
+        end
+
+        add_token(Token::EOF)
+        @tokens
+      end
+
+      def scan_token
+        char = @scanner.advance
+
+        return false if skip_whitespace(char)
+        return false if skip_comment(char)
+
+        single_token(char) ||
+        double_token(char) ||
+        triple_token(char) ||
+        nil
+      end
+
+      def skip_whitespace(char)
+        if char == "\n"
+          @scanner.pos.line += 1
+          @scanner.pos.col = 1
+          return true
+        end
+
+        whitespace?(char)
+      end
+
+      def skip_comment(char)
+        if char == '/' && match_char?('/')
+          loop do
+            break if @scanner.peek == "\n"
+            break if @scanner.at_end?
+            @scanner.advance
+          end
+
+          true
+        else
+          false
+        end
+      end
+
+      def_delegator :@scanner, :whitespace?
+      def_delegator :@scanner, :alpha_numeric?
+      def_delegator :@scanner, :alpha_char?
+      def_delegator :@scanner, :digit_char?
+      def_delegator :@scanner, :match_char?
 
       def bool_token?(str)
         str == 'True' || str == 'False'

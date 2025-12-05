@@ -9,6 +9,13 @@ module Tao
         init_pos
       end
 
+      def whitespace?(ch)
+        ch == "\n" ||
+        ch == "\r" ||
+        ch == "\t" ||
+        ch == ' '
+      end
+
       def alpha_numeric?(ch)
         alpha_char?(ch) || digit_char?(ch)
       end
@@ -21,6 +28,14 @@ module Tao
 
       def digit_char?(ch)
         '0' <= ch && ch <= '9'
+      end
+
+      def match_char?(ch)
+        return false if at_end?
+        return false if @source[@current] != ch
+
+        @current += 1
+        true
       end
 
       def peek
