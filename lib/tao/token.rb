@@ -1,3 +1,6 @@
+require 'tao/token/types'
+require 'tao/token/span'
+
 module Tao
   class Token
     include Types

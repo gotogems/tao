@@ -5,7 +5,7 @@ module Tao
         token_type :Plus, :Minus, :Star, :Slash, :Modulo,
                    :Greater, :GreaterEq, :Less, :LessEq,
                    :Equal, :EqualEq, :Bang, :BangEq,
-                   :And, :Or, :Not, :Pipe
+                   :And, :Or, :Not, :PipeOp
 
         token_type :Comma, :Colon, :Semi, :Dot,
                    :LSquare, :RSquare,

@@ -1,3 +1,8 @@
+require 'tao/lexer/internal/punctuation'
+require 'tao/lexer/internal/operators'
+require 'tao/lexer/keywords'
+require 'tao/lexer/scanner'
+
 module Tao
   module Lexer
     class Tokenizer
@@ -24,8 +29,8 @@ module Tao
       def scan_token
         char = @scanner.advance
 
-        return false if skip_whitespace(char)
-        return false if skip_comment(char)
+        return if skip_whitespace(char)
+        return if skip_comment(char)
 
         single_token(char) ||
         double_token(char) ||
@@ -69,6 +74,14 @@ module Tao
 
       def none_token?(str)
         str == 'None'
+      end
+
+      def punc_get(str)
+        Internal::Punctuation[str]
+      end
+
+      def op_get(str)
+        Internal::Operators[str]
       end
     end
   end

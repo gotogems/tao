@@ -1,3 +1,6 @@
+require 'tao/lexer/scanner/position'
+require 'tao/lexer/scanner/position_tracking'
+
 module Tao
   module Lexer
     class Scanner
@@ -10,10 +13,10 @@ module Tao
       end
 
       def whitespace?(ch)
+        ch == ' '  ||
         ch == "\n" ||
-        ch == "\r" ||
         ch == "\t" ||
-        ch == ' '
+        ch == "\r"
       end
 
       def alpha_numeric?(ch)
