@@ -57,7 +57,8 @@ module Tao
         when '.' then add_token(punc_get('.'), '.')
         when '"' then string_token(char)
         else
-          number_token
+          number_token(char) ||
+            identifier_token(char)
         end
       end
 
@@ -85,6 +86,31 @@ module Tao
         end
       end
 
+      def identifier_token(char)
+        if alpha_char?(char)
+          while alpha_numeric?(@scanner.peek)
+            @scanner.advance
+          end
+
+          text = @scanner.text(@start)
+
+          if bool_token?(text)
+            add_token(Token::Bool, text)
+          elsif none_token?(text)
+            add_token(Token::None, text)
+          else
+            if type = Keywords[text]
+              add_token(type, text)
+            else
+              add_token(Token::Identifier, text)
+            end
+          end
+        else
+          @error_sink.add(:unexpected, char)
+          add_token(Token::Illegal, "")
+        end
+      end
+
       def string_token(char)
         loop do
           break if @scanner.peek == '"'
@@ -101,7 +127,12 @@ module Tao
         end
 
         if @scanner.at_end?
-          add_error(:unterminated)
+          @error_sink.add(:unterminated)
+          return add_token(Token::Illegal, "")
+        end
+
+        if @scanner.beginning_of_line?
+          @error_sink.add(:unterminated)
           return add_token(Token::Illegal, "")
         end
 
@@ -146,10 +177,6 @@ module Tao
           @start_pos,
           @scanner.pos.dup
         ).tap { |token| @tokens << token }
-      end
-
-      def add_error(type, lexeme = "")
-        @error_sink.public_send(type, lexeme)
       end
 
       def bool_token?(str)

@@ -8,20 +8,23 @@ module Tao
         @errors  = []
       end
 
+      def add_error(type, lexeme = "")
+        @errors << send(type, lexeme)
+      end
+
       def unterminated(_lexeme)
         UnterminatedString.new(pos_get)
-          .tap { |error| @errors << error }
       end
 
       def unexpected(char)
         UnexpectedChar.new(pos_get, char)
-          .tap { |error| @errors << error }
       end
 
       def invalid(str)
         IllegalToken.new(pos_get, str)
-          .tap { |error| @errors << error }
       end
+
+      alias_method :add, :add_error
 
       def pos_get
         @scanner.pos.dup
