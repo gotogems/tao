@@ -40,22 +40,33 @@ module Tao
         return if skip_comment(char)
 
         case char
-        when '+' then add_token(op_get('+'), '+')
-        when '-' then add_token(op_get('-'), '-')
-        when '*' then add_token(op_get('*'), '*')
-        when '/' then add_token(op_get('/'), '/')
-        when '%' then add_token(op_get('%'), '%')
-        when '{' then add_token(punc_get('{'), '{')
-        when '}' then add_token(punc_get('}'), '}')
-        when '[' then add_token(punc_get('['), '[')
-        when ']' then add_token(punc_get(']'), ']')
-        when '(' then add_token(punc_get('('), '(')
-        when ')' then add_token(punc_get(')'), ')')
-        when ',' then add_token(punc_get(','), ',')
-        when ':' then add_token(punc_get(':'), ':')
-        when ';' then add_token(punc_get(';'), ';')
-        when '.' then add_token(punc_get('.'), '.')
-        when '"' then string_token(char)
+        when '+' then op_token('+')
+        when '-' then op_token('-')
+        when '*' then op_token('*')
+        when '/' then op_token('/')
+        when '%' then op_token('%')
+        when '{' then punc_token('{')
+        when '}' then punc_token('}')
+        when '[' then punc_token('[')
+        when ']' then punc_token(']')
+        when '(' then punc_token('(')
+        when ')' then punc_token(')')
+        when ',' then punc_token(',')
+        when ':' then punc_token(':')
+        when ';' then punc_token(';')
+        when '.' then punc_token('.')
+        when '>'
+          match_char?('=') ? op_token('>=') : op_token('>')
+        when '<'
+          match_char?('=') ? op_token('<=') : op_token('<')
+        when '='
+          match_char?('=') ? op_token('==') : op_token('=')
+        when '!'
+          match_char?('=') ? op_token('!=') : op_token('!')
+        when '?'
+          match_char?('.') ? op_token('?.') : op_token('?')
+        when '"'
+          string_token(char)
         else
           number_token(char) ||
             identifier_token(char)
@@ -185,6 +196,14 @@ module Tao
 
       def none_token?(str)
         str == 'None'
+      end
+
+      def punc_token(str)
+        add_token(punc_get(str), str)
+      end
+
+      def op_token(str)
+        add_token(op_get(str), str)
       end
 
       def punc_get(str)
