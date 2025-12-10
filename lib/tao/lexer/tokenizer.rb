@@ -21,14 +21,26 @@ module Tao
         @error_sink = ErrorSink.new(@scanner)
       end
 
+      def next_token
+        @pause_after_token = true
+        scan_tokens
+
+        @pause_after_token = false
+        @next_token
+      end
+
       def scan_tokens
         loop do
           break if @scanner.at_end?
           @start = @scanner.pos.index
           @start_pos = @scanner.pos.dup
-          scan_token
+
+          if @next_token = scan_token
+            break if @pause_after_token
+          end
         end
 
+        return if @pause_after_token
         add_token(Token::EOF)
         @tokens
       end
@@ -65,6 +77,18 @@ module Tao
           match_char?('=') ? op_token('!=') : op_token('!')
         when '?'
           match_char?('.') ? op_token('?.') : op_token('?')
+        when '&'
+          if match_char?('&')
+            match_char?('=') ? op_token('&&=') : op_token('&&')
+          else
+            op_token('&')
+          end
+        when '|'
+          if match_char?('|')
+            match_char?('=') ? op_token('||=') : op_token('||')
+          else
+            match_char?('>') ? op_token('|>') : op_token('|')
+          end
         when '"'
           string_token(char)
         else
@@ -75,8 +99,7 @@ module Tao
 
       def skip_whitespace(char)
         if char == "\n"
-          @scanner.pos.line += 1
-          @scanner.pos.col = 1
+          @scanner.advance_line
           return true
         end
 
@@ -128,8 +151,7 @@ module Tao
           break if @scanner.at_end?
 
           if @scanner.peek == "\n"
-            @scanner.pos.line += 1
-            @scanner.pos.col = 1
+            @scanner.advance_line
             @scanner.advance
             break
           end
@@ -185,7 +207,7 @@ module Tao
         Token.new(
           type,
           lexeme,
-          @start_pos,
+          @start_pos.dup,
           @scanner.pos.dup
         ).tap { |token| @tokens << token }
       end

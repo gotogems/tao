@@ -38,6 +38,7 @@ module Tao
         return false if @source[@current] != ch
 
         @current += 1
+        update_pos
         true
       end
 
@@ -61,6 +62,7 @@ module Tao
       def advance(step = 1)
         char = @source[@current]
         @current += step
+        update_pos
         char
       end
 

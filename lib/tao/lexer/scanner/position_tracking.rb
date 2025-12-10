@@ -10,6 +10,16 @@ module Tao
           @pos = Position.new(0, 1, 1)
         end
 
+        def update_pos(step = 1)
+          @pos.index += step
+          @pos.col += step
+        end
+
+        def advance_line
+          @pos.line += 1
+          @pos.col = 1
+        end
+
         def beginning_of_line?
           @pos.col == 1
         end
