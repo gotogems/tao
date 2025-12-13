@@ -13,19 +13,14 @@ module Tao
         @scanner = Scanner.new(source)
         @tokens  = []
         @start   = 0
-
-        init_sink
-      end
-
-      def init_sink
-        @error_sink = ErrorSink.new(@scanner)
+        @sink    = ErrorSink.new(@scanner)
       end
 
       def next_token
-        @pause_after_token = true
+        @stop_after_token = true
+        @next_token = nil
         scan_tokens
-
-        @pause_after_token = false
+        @stop_after_token = false
         @next_token
       end
 
@@ -36,11 +31,11 @@ module Tao
           @start_pos = @scanner.pos.dup
 
           if @next_token = scan_token
-            break if @pause_after_token
+            break if @stop_after_token
           end
         end
 
-        return if @pause_after_token
+        return if @stop_after_token
         add_token(Token::EOF)
         @tokens
       end
@@ -140,7 +135,7 @@ module Tao
             end
           end
         else
-          @error_sink.add(:unexpected, char)
+          @sink.add_error(:unexpected, char)
           add_token(Token::Illegal, "")
         end
       end
@@ -160,12 +155,12 @@ module Tao
         end
 
         if @scanner.at_end?
-          @error_sink.add(:unterminated)
+          @sink.add_error(:unterminated)
           return add_token(Token::Illegal, "")
         end
 
         if @scanner.beginning_of_line?
-          @error_sink.add(:unterminated)
+          @sink.add_error(:unterminated)
           return add_token(Token::Illegal, "")
         end
 
