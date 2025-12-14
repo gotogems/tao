@@ -1,5 +1,5 @@
 module Tao
-  class Parser
+  module Parse
     module Precedence
       PRECEDENCE = {}
     end
