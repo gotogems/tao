@@ -31,7 +31,7 @@ module Tao
       end
     end
 
-    class Binary < Expression
+    class BinaryExpr < Expression
       def initialize(left, operator, right)
         @left     = left
         @operator = operator
@@ -47,7 +47,7 @@ module Tao
       end
     end
 
-    class Unary < Expression
+    class UnaryExpr < Expression
       def initialize(operator, right)
         @operator = operator
         @right    = right
@@ -59,6 +59,17 @@ module Tao
 
       def children
         [@right]
+      end
+    end
+
+    class Literal < Expression
+      def initialize(type, value)
+        @type  = type
+        @value = value
+      end
+
+      def accept(visitor)
+        visitor.visit_literal(self)
       end
     end
   end
