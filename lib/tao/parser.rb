@@ -5,11 +5,40 @@ module Tao
     def initialize(lexer)
       @lexer   = lexer
       @current = 0
+      init_tokens
+    end
+
+    def init_tokens
       next_token
       next_token
     end
 
+    def parse_program
+      begin
+        parse_expression
+      rescue ParseError
+        synchronize
+      end
+    end
+
     def parse_expression(precedence = 0)
+      if prefix_fn = prefix_rule_of(peek)
+        left = send(prefix_fn)
+
+        loop do
+          break if precedence >= precedence_of(peek)
+          infix_fn = infix_rule_of(peek)
+
+          break if infix_fn.nil?
+          advance
+
+          left = send(infix_fn)
+        end
+
+        left
+      else
+        raise ParseError
+      end
     end
 
     def parse_prefix
