@@ -35,6 +35,14 @@ module Tao
         Token::Fun        => Rule.new(:parse_func),
         Token::Self       => Rule.new(:parse_self)
       }.freeze
+
+      def self.of(token)
+        self[token.type] || Rule.new
+      end
+
+      def self.[](type)
+        RULES[type]
+      end
     end
   end
 end

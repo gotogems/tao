@@ -21,24 +21,24 @@ module Tao
       end
     end
 
-    def parse_expression(precedence = 0)
-      if prefix_fn = prefix_rule_of(peek)
-        left = send(prefix_fn)
+    def parse_expression(rbp = Parse::PrecLowest)
+      rule = Parse::Rules.of(peek)
 
-        loop do
-          break if precedence >= precedence_of(peek)
-          infix_fn = infix_rule_of(peek)
-
-          break if infix_fn.nil?
-          advance
-
-          left = send(infix_fn)
-        end
-
-        left
-      else
+      if rule.prefix.empty?
         raise ParseError
       end
+
+      left = send(rule.prefix)
+
+      while rbp < lbp_of(peek) do
+        rule = Parse::Rules.of(peek)
+        break if rule.infix.empty?
+
+        advance
+        left = send(rule.infix, left)
+      end
+
+      left
     end
 
     def parse_prefix
