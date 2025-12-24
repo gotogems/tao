@@ -64,7 +64,16 @@ module Tao
     def parse_infix(left)
     end
 
+    def parse_pipe(left)
+    end
+
+    def parse_grouping
+    end
+
     def parse_identifier
+      expr = Nodes::Identifier.new(peek.lexeme)
+      advance
+      expr
     end
 
     def parse_binary(left)
@@ -118,6 +127,10 @@ module Tao
           advance
         end
       end
+    end
+
+    def expect(type)
+      consume(type, '')
     end
 
     def consume(type, message)

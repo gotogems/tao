@@ -31,6 +31,26 @@ module Tao
       end
     end
 
+    class GroupingExpr < Expression
+      def initialize(expr)
+        @expr = expr
+      end
+
+      def accept(visitor)
+        visitor.visit_grouping_expr(self)
+      end
+    end
+
+    class Identifier < Expression
+      def initialize(name)
+        @name = name
+      end
+
+      def accept(visitor)
+        visitor.visit_identifier(self)
+      end
+    end
+
     class BinaryExpr < Expression
       def initialize(left, operator, right)
         @left     = left
