@@ -1,5 +1,5 @@
-require 'tao/lexer/internal/punctuation'
-require 'tao/lexer/internal/operators'
+require 'tao/lexer/punctuation'
+require 'tao/lexer/operators'
 require 'tao/lexer/keywords'
 require 'tao/lexer/scanner'
 
@@ -228,11 +228,11 @@ module Tao
       end
 
       def punc_get(str)
-        Internal::Punctuation[str]
+        Punctuation[str]
       end
 
       def op_get(str)
-        Internal::Operators[str]
+        Operators[str]
       end
 
       def done?
