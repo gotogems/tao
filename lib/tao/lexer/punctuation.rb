@@ -14,7 +14,7 @@ module Tao
         '.' => Token::Dot
       }.freeze
 
-      def self.[](str)
+      def self.get(str)
         PUNCTUATION[str]
       end
     end

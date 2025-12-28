@@ -26,7 +26,7 @@ module Tao
         '||=' => Token::Illegal
       }.freeze
 
-      def self.[](str)
+      def self.get(str)
         OPERATORS[str]
       end
     end

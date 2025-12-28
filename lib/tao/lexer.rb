@@ -1,4 +1,4 @@
-require 'tao/lexer/error_sink'
+require 'tao/lexer/errorhandler'
 require 'tao/lexer/tokenizer'
 
 module Tao
