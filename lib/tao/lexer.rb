@@ -3,12 +3,28 @@ require 'tao/lexer/tokenizer'
 
 module Tao
   module Lexer
-    UnterminatedString = Data.define(:pos)
-    UnexpectedChar     = Data.define(:pos, :char)
-    IllegalToken       = Data.define(:pos, :lexeme)
+    LexicalError = Struct.new(:pos, :lexeme)
+
+    class UnterminatedString < LexicalError; end
+    class UnexpectedChar     < LexicalError; end
+    class IllegalToken       < LexicalError; end
+
+    class ErrorSink < ErrorHandler
+      def unterminated(_lexeme)
+        UnterminatedString.new(pos_get)
+      end
+
+      def unexpected(char)
+        UnexpectedChar.new(pos_get, char)
+      end
+
+      def invalid(str)
+        IllegalToken.new(pos_get, str)
+      end
+    end
 
     def self.tokenize(source)
-      tokenizer = Tokenizer.new(source)
+      Tokenizer.new(source)
     end
   end
 end

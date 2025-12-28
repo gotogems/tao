@@ -228,11 +228,11 @@ module Tao
       end
 
       def punc_get(str)
-        Punctuation[str]
+        Punctuation.get(str)
       end
 
       def op_get(str)
-        Operators[str]
+        Operators.get(str)
       end
 
       def done?
