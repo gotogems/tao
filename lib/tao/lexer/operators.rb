@@ -18,6 +18,7 @@ module Tao
         '<='  => Token::LessEq,
         '=='  => Token::EqualEq,
         '!='  => Token::BangEq,
+        '->'  => Token::Arrow,
         '&&'  => Token::And,
         '||'  => Token::Or,
         '|>'  => Token::PipeOp,

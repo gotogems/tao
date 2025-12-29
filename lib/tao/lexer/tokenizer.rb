@@ -52,7 +52,6 @@ module Tao
 
         case char
         when '+' then op_token('+')
-        when '-' then op_token('-')
         when '*' then op_token('*')
         when '/' then op_token('/')
         when '%' then op_token('%')
@@ -74,6 +73,8 @@ module Tao
           match_char?('=') ? op_token('==') : op_token('=')
         when '!'
           match_char?('=') ? op_token('!=') : op_token('!')
+        when '-'
+          match_char?('>') ? op_token('->') : op_token('-')
         when '?'
           match_char?('.') ? op_token('?.') : op_token('?')
         when '&'
