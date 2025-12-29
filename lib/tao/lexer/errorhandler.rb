@@ -14,7 +14,7 @@ module Tao
 
       alias_method :add, :add_error
 
-      def pos_get
+      def pos_get(_dup: true)
         @scanner.pos.dup
       end
     end
