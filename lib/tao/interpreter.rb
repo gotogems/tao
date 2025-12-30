@@ -8,6 +8,11 @@ module Tao
     end
 
     def interpret(_statements)
+      evaluate(_statements)
+    end
+
+    def evaluate(expr)
+      expr.accept(self)
     end
   end
 end

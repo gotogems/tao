@@ -32,6 +32,8 @@ module Tao
     end
 
     class AssignExpr < Expression
+      attr_reader :target, :operator, :value
+
       def initialize(target, operator, value)
         @target   = target
         @operator = operator
@@ -48,6 +50,8 @@ module Tao
     end
 
     class Identifier < Expression
+      attr_reader :name
+
       def initialize(name)
         @name = name
       end
@@ -58,6 +62,8 @@ module Tao
     end
 
     class BinaryExpr < Expression
+      attr_reader :left, :operator, :right
+
       def initialize(left, operator, right)
         @left     = left
         @operator = operator
@@ -74,6 +80,8 @@ module Tao
     end
 
     class UnaryExpr < Expression
+      attr_reader :operator, :right
+
       def initialize(operator, right)
         @operator = operator
         @right    = right
@@ -89,6 +97,8 @@ module Tao
     end
 
     class Literal < Expression
+      attr_reader :type, :value
+
       def initialize(type, value)
         @type  = type
         @value = value
