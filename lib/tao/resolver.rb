@@ -11,6 +11,11 @@ module Tao
       end_scope
     end
 
+    def visit_assign_expr(expr)
+      resolve(expr.value)
+      resolve_local(expr, expr.target.name)
+    end
+
     def visit_binary_expr(expr)
       resolve(expr.left)
       resolve(expr.right)
