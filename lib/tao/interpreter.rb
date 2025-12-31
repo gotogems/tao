@@ -4,11 +4,25 @@ module Tao
 
     def initialize
       @globals = Environment.new
-      @environment = @globals
+      @environ = @globals
+      @locals  = {}
     end
 
-    def interpret(_statements)
-      evaluate(_statements)
+    def interpret(statements)
+      begin
+        statements.each do |statement|
+          execute(statement)
+        end
+      rescue RuntimeError => error
+      end
+    end
+
+    def resolve(expr, depth)
+      @locals[expr] = depth
+    end
+
+    def execute(statement)
+      statement.accept(self)
     end
 
     def evaluate(expr)
