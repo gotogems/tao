@@ -1,50 +1,44 @@
 module Tao
   class Environment
+    extend Forwardable
     attr_reader :enclosing
 
     def initialize(enclosing = nil)
       @enclosing = enclosing
-      @values = {}
-    end
-
-    def ancestor(distance)
-      environ = self
-
-      loop do
-        break if distance < 1
-        environ = environ.enclosing
-        distance -= 1
-      end
-
-      environ
-    end
-
-    def define(name, value)
-      @values[name] = value
+      @values    = {}
     end
 
     def assign_at(distance, name, value)
       ancestor(distance).assign(name, value)
     end
 
-    def assign(name, value)
-      if values.has_key?(name)
-        values[name] = value
-      elsif enclosing
-        enclosing.assign(name, value)
-      else
-        raise RuntimeError
-      end
-    end
-
     def get_at(distance, name)
       ancestor(distance).get(name)
     end
 
+    def ancestor(distance = 1)
+      environ = self
+      distance.times { environ = environ.enclosing }
+      environ
+    end
+
+    def assign(name, value)
+      return store(name, value)            if has_key?(name)
+      return enclosing.assign(name, value) if enclosing
+      raise RuntimeError
+    end
+
     def get(name)
-      return values[name]        if values.has_key?(name)
+      return @values[name]       if has_key?(name)
       return enclosing.get(name) if enclosing
       raise RuntimeError
+    end
+
+    def_delegator :@values, :has_key?
+    def_delegator :@values, :store
+
+    def define(name, value)
+      store(name, value)
     end
   end
 end
