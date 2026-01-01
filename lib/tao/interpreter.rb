@@ -35,6 +35,20 @@ module Tao
       expr.value
     end
 
+    def look_up(name, expr)
+      if distance = @locals[expr]
+        @environ.get_at(distance, name)
+      else
+        @globals[name]
+      end
+    end
+
+    def truthy?(object)
+      return false if object.nil?
+      return false if object.is_a?(FalseClass)
+      true
+    end
+
     def interpret(statements)
       begin
         statements.each do |statement|

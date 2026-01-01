@@ -39,6 +39,18 @@ module Tao
       parse_expression
     end
 
+    def parse_var_declaration
+      mutable = match?(Token::Mut)
+      lexeme = consume(Token::Identifier, '').lexeme
+
+      if match?(Token::Equal)
+        initializer = parse_expression
+        Nodes::VarDeclaration.new(lexeme, mutable, initializer)
+      else
+        raise ParseError
+      end
+    end
+
     def parse_expression(rbp = Parse::PrecLowest)
       rule = Parse::Rules.of(peek)
 

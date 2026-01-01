@@ -31,6 +31,24 @@ module Tao
       end
     end
 
+    class VarDeclaration < Declaration
+      attr_reader :name, :mutable, :initializer
+
+      def initialize(name, mutable, initializer)
+        @name        = name
+        @mutable     = mutable
+        @initializer = initializer
+      end
+
+      def accept(visitor)
+        visitor.visit_var_declaration(self)
+      end
+
+      def children
+        [@name, @initializer]
+      end
+    end
+
     class AssignExpr < Expression
       attr_reader :target, :operator, :value
 
