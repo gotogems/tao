@@ -8,6 +8,15 @@ module Tao
       @locals  = {}
     end
 
+    def visit_var_declaration(var)
+      value = evaluate(var.initializer)
+      @environ.define(var.name, value)
+    end
+
+    def visit_identifier(expr)
+      look_up(expr.name, expr)
+    end
+
     def visit_binary_expr(expr)
       left = evaluate(expr.left)
       right = evaluate(expr.right)

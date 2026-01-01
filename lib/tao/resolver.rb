@@ -11,9 +11,23 @@ module Tao
       end_scope
     end
 
+    def visit_var_declaration(var)
+      declare(var.name)
+      resolve(var.initializer)
+      define(var.name)
+    end
+
     def visit_assign_expr(expr)
       resolve(expr.value)
       resolve_local(expr, expr.target.name)
+    end
+
+    def visit_identifier(expr)
+      if @scopes.size > 0 && @scopes.last[expr.name] == false
+        "Can't read local variable in its own initializer."
+      end
+
+      resolve_local(expr, expr.name)
     end
 
     def visit_binary_expr(expr)
