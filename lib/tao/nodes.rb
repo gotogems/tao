@@ -31,6 +31,23 @@ module Tao
       end
     end
 
+    class ReturnStatement < Statement
+      attr_reader :keyword, :value
+
+      def initialize(keyword, value)
+        @keyword = keyword
+        @value   = value
+      end
+
+      def accept(visitor)
+        visitor.visit_return_statement(self)
+      end
+
+      def children
+        [@value]
+      end
+    end
+
     class VarDeclaration < Declaration
       attr_reader :name, :mutable, :initializer
 

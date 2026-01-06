@@ -33,10 +33,19 @@ module Tao
       return parse_return if match?(Token::Return)
       return parse_fun    if match?(Token::Fun)
       return parse_self   if match?(Token::Self)
-      return parse_let    if match?(Token::Let)
+      return parse_var_declaration if match?(Token::Let)
       return parse_data   if match?(Token::Data)
 
       parse_expression
+    end
+
+    def parse_return_statement
+      keyword = previous
+      value = nil
+      value = parse_expression if !check?(Token::Semi)
+
+      consume(Token::Semi, '')
+      Nodes::ReturnStatement.new(keyword, value)
     end
 
     def parse_var_declaration
